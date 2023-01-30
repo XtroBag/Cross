@@ -1,0 +1,19 @@
+{
+  "name": "cross",
+  "version": "1.0.0",
+  "description": "a bot for discord",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "type": "module",
+  "author": "xtrobag",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "discord.js": "^14.7.1",
+    "fs": "^0.0.1-security",
+    "mongoose": "^6.9.0",
+    "nodemon": "^2.0.20"
+  }
+}
