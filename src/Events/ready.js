@@ -6,5 +6,6 @@ export const Event = {
   once: true,
  async execute(client) {
     console.log(chalk.green(`Ready!`), chalk.white(`Logged in as ${client.user.tag}`));
+
   },
 };

@@ -15,9 +15,9 @@ const client = new Client({
 
 client.commands = new Collection();
 
-CommandHandler(client);
-EventHandler(client);
-DatabaseConnect();
+await CommandHandler(client);
+await EventHandler(client);
+await DatabaseConnect(config.uri);
 
 
 client.login(config.token);

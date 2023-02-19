@@ -5,7 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ActivityType,
-  codeBlock
+  codeBlock,
 } from "discord.js";
 import emojis from "../../emojis.json" assert { type: "json" };
 
@@ -100,7 +100,7 @@ export const Command = {
     const customStatus = member.presence?.activities.find(
       (activity) => activity.name === "Custom Status"
     );
-    const activityStatus = customStatus ? customStatus?.state : "No status";
+    const activityStatus = customStatus ? customStatus?.state : "None";
 
     // Status
     // > Gets the users status and converts it onto an embed
@@ -129,7 +129,7 @@ export const Command = {
     if (member.premiumSinceTimestamp) {
       boosting = `<t:${parseInt(member.premiumSinceTimestamp / 1000)}:R>`;
     } else {
-      boosting = "No";
+      boosting = "None";
     }
 
     let communication;
@@ -143,14 +143,7 @@ export const Command = {
     if (member.voice.channel) {
       incall = "Yes";
     } else {
-      incall = "No";
-    }
-
-    let communicationcooldown;
-    if (member.communicationDisabledUntil) {
-      communicationcooldown = `<t:${Math.round(member.communicationDisabledUntilTimestamp / 1000)}:R>`;
-    } else {
-      communicationcooldown = "None active";
+      incall = "None";
     }
 
     let memberActivities = member.presence?.activities.filter(
@@ -162,11 +155,10 @@ export const Command = {
     const embed = new EmbedBuilder()
       .addFields(
         {
-          name: "Profile Information:",
+          name: `Who is ${member.user.username}?`,
           inline: true,
-          value: `<:Name:1069370477337903175> Name: \`\` ${
-            member.user.username
-          } \`\`
+          value: `${emojis.Blank}${emojis.Blank}
+<:Name:1069370477337903175> Name: \`\` ${member.user.username} \`\`
            ▸ <:Tag:1069384742111281212> **Tag:** #${member.user.discriminator}
            ▸ <:ID:1069383758928695356> **ID:** ${member.user.id}
            <:Badges:1069373687112941628> Badges: ${badges.join(" ")}
@@ -193,23 +185,22 @@ export const Command = {
         {
           name: "Server Information:",
           value: `
-          <:NickName:1069372079511699516> Nickname: ${
-            member.nickname ?? `No nickname`
-          }
-          <:RoleColor:1069371153459716176> Role Color: ${
-            member.displayHexColor
-          }
           <:Crown:1069371696525623326> Owner: ${
             member.guild.ownerId === member.id ? "Yes" : "No"
           }
+          <:NickName:1069372079511699516> Nickname: ${member.nickname ?? `None`}
+          <:Highest:1069394134038753290> Highest Role: ${member.roles.highest}
+          <:Roles:1069710402524565514> Role Size: ${
+            member.roles.cache.size - 1 ? member.roles.cache.size - 1 : "None"
+          }
+          <:RoleColor:1069371153459716176> Role Color: ${member.displayHexColor}
           <:Joined:1069378282123968543> Joined: <t:${parseInt(
             member.joinedTimestamp / 1000
           )}:R>
           <:Boosting:1069378920039850124> Boosting: ${boosting}
-          <:Communication:1069382001611776070> Communication: \`\` ${communication} \`\`
-          ▸ <:Ends:1069401348476518501> **Ends:** ${communicationcooldown}
+          <:Communication:1069382001611776070> Communication: ${communication} 
           <:Call:1069392815718678669> Active Call: ${incall}
-          <:Highest:1069394134038753290> Highest: ${member.roles.highest}
+
                  `,
         }
       )
@@ -217,10 +208,6 @@ export const Command = {
       .setThumbnail(member.user.avatarURL());
 
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId("permissions")
-        .setLabel("Permissions")
-        .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId("roles")
         .setLabel("Roles")
@@ -242,53 +229,38 @@ export const Command = {
     collector.on("collect", async (interaction) => {
       if (interaction.isButton()) {
         if (interaction.user.id === int.user.id) {
-          if (interaction.customId === "permissions") {
-
-            await interaction.update({
-              components: [row],
-              embeds: [
-                new EmbedBuilder()
-                  .setTitle("Permissions List")
-                  .addFields({
-                    name: "Permissions",
-                    value: member.permissions.toArray().join(", "),
-                  })
-                  .setColor("#2F3136"),
-              ],
-            });
-          }
           if (interaction.customId === "roles") {
-
             await interaction.update({
               components: [row],
               embeds: [
                 new EmbedBuilder()
-                  .setDescription(member.roles.cache
-                    .toJSON()
-                    .filter((role) => role.id !== int.guild.id).length === 0
-                    ? codeBlock("diff", "- No roles for this user -")
-                    : member.roles.cache
-                        .toJSON()
-                        .filter((role) => role.id !== int.guild.id)
-                        .sort((a, b) => b.position - a.position)
-                        .slice(0, 3 * 4)
-                        .map((val, idx) => {
-                          return `${val}${(idx + 1) % 3 === 0 ? "\n" : ""}`;
-                        })
-                        .join(" ")
-                        .split("\n")
-                        .join("\n")
-                        .concat(
-                          member.roles.cache.toJSON().length <= 10 // need to fix this to stop listing more roles when it hits the max limit i set
-                            ? ""
-                            : codeBlock("yaml", "To many roles to display")
-                        ))
+                  .setDescription(
+                    member.roles.cache
+                      .toJSON()
+                      .filter((role) => role.id !== int.guild.id).length === 0
+                      ? codeBlock("diff", "- No roles for this user -")
+                      : member.roles.cache
+                          .toJSON()
+                          .filter((role) => role.id !== int.guild.id)
+                          .sort((a, b) => b.position - a.position)
+                          .slice(0, 3 * 4)
+                          .map((val, idx) => {
+                            return `${val}${(idx + 1) % 3 === 0 ? "\n" : ""}`;
+                          })
+                          .join(" ")
+                          .split("\n")
+                          .join("\n")
+                          .concat(
+                            member.roles.cache.toJSON().length <= 10 // need to fix this to stop listing more roles when it hits the max limit i set
+                              ? ""
+                              : codeBlock("yaml", "To many roles to display")
+                          )
+                  )
                   .setColor("#2F3136"),
               ],
             });
           }
           if (interaction.customId === "presence") {
-
             await interaction.update({
               components: [row],
               embeds: [
@@ -296,14 +268,14 @@ export const Command = {
                   .setDescription("Presence list")
                   .setDescription(
                     codeBlock(
-                    "fix",
-                    `${
-                      member.presence?.activities
-                        .filter((item) => item.name != "Custom Status")
-                        .map((activity) => `${activity.name}`)
-                        .join("\n") || "No activities"
-                    }`
-                  ),
+                      "fix",
+                      `${
+                        member.presence?.activities
+                          .filter((item) => item.name != "Custom Status")
+                          .map((activity) => `${activity.name}`)
+                          .join("\n") || "No activities"
+                      }`
+                    )
                   )
                   .setColor("#2F3136"),
               ],

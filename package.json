@@ -10,10 +10,13 @@
   "author": "xtrobag",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.2.6",
     "chalk": "^5.2.0",
     "discord.js": "^14.7.1",
     "fs": "^0.0.1-security",
     "mongoose": "^6.9.0",
-    "nodemon": "^2.0.20"
+    "node-fetch": "^3.3.0",
+    "nodemon": "^2.0.20",
+    "phin": "^3.7.0"
   }
 }

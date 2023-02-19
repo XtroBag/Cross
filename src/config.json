@@ -1,6 +1,6 @@
 {
     "token": "MTA2NzYyNjUxMTU0NjQ3MDQ4MA.GfqfRH.LugtjHSHx6Wqz-uoE2ymUtvUD_6ZJRFm6dWikI",
     "clientID": "1067626511546470480",
-    "databaseuri": "mongodb+srv://XtroBag:XTBag122@cluster0.2inmgjf.mongodb.net/test",
+    "uri": "mongodb+srv://XtroBag:XTBag122@cluster0.2inmgjf.mongodb.net/Maple",
     "ownerID": "929830815699984475"
 }

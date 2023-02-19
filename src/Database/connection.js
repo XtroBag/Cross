@@ -1,12 +1,8 @@
 import mongo from "mongoose";
-import config from "../config.json" assert { type: "json" };
 
-export async function DatabaseConnect() {
+export async function DatabaseConnect(uri) {
         try {
-             mongo.connect(config.databaseuri, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            })
+            await mongo.connect(uri)
         } catch (e) {
             console.error(e)
         }
